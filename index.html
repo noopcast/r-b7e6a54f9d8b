@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#fff6ec">
+<title>Recueil 24 h</title>
+<style>
+:root{
+  --bg:#fff6ec;--card:#ffffff;--ink:#2b2118;--muted:#6f5f50;--line:#ecdccb;
+  --accent:#d9622b;--accent-ink:#ffffff;--soft:#fde9d7;--good:#2f7d55;--warn:#b23b1a;
+  --liquid:#f3c65a;--liquid-2:#e9b23f;--can:#ffffff;--can-line:#8a7766;
+}
+:root[data-theme="dark"]{
+  --bg:#12141c;--card:#1d2030;--ink:#f4eee6;--muted:#aaa49b;--line:#2d3144;
+  --accent:#f0a35e;--accent-ink:#1b1209;--soft:#2a2433;--good:#7fd1a4;--warn:#ff9b7d;
+  --liquid:#d9ae4a;--liquid-2:#c39436;--can:#2a2e40;--can-line:#8d8aa0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink)}
+body{font:18px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;min-height:100dvh;
+  padding-bottom:calc(64px + env(safe-area-inset-bottom));-webkit-tap-highlight-color:transparent}
+.wrap{max-width:460px;margin:0 auto;padding:0 16px}
+/* ciel */
+.sky{position:relative;height:120px;overflow:hidden;transition:background 2s}
+.sky.dawn{background:linear-gradient(#f7b48a,#fde3c7)}
+.sky.day{background:linear-gradient(#7cc4ef,#d8eefa)}
+.sky.dusk{background:linear-gradient(#5b4b8a,#f2a07b)}
+.sky.night{background:linear-gradient(#0b1030,#232a52)}
+.sky svg{position:absolute;inset:0;width:100%;height:100%}
+.sun,.moon,.stars{transition:opacity 2s}
+.sky:not(.day):not(.dawn) .sun{opacity:0}
+.sky:not(.night) .moon,.sky:not(.night) .stars{opacity:0}
+.star{animation:twinkle 3s ease-in-out infinite}
+.star:nth-child(2n){animation-delay:1.2s}.star:nth-child(3n){animation-delay:2.1s}
+@keyframes twinkle{50%{opacity:.25}}
+.cloud{animation:drift 40s linear infinite}
+.cloud.c2{animation-duration:60s;animation-delay:-25s}
+@keyframes drift{from{transform:translateX(-120px)}to{transform:translateX(520px)}}
+.sky.night .cloud{opacity:.15}
+.sun{animation:glow 4s ease-in-out infinite;transform-origin:center;transform-box:fill-box}
+@keyframes glow{50%{transform:scale(1.06)}}
+/* contenu */
+h1{font-size:26px;line-height:1.2;margin:18px 0 6px}
+h2{font-size:20px;margin:18px 0 8px}
+p{margin:6px 0}
+.muted{color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:14px 0}
+ol.steps{list-style:none;counter-reset:s}
+ol.steps li{counter-increment:s;position:relative;padding:10px 0 10px 46px;border-bottom:1px solid var(--line)}
+ol.steps li:last-child{border-bottom:0}
+ol.steps li::before{content:counter(s);position:absolute;left:0;top:9px;width:32px;height:32px;border-radius:50%;
+  background:var(--soft);color:var(--accent);font-weight:700;display:grid;place-items:center}
+.rule{background:var(--soft);border-radius:14px;padding:12px 14px;margin:12px 0;font-weight:600}
+.btn{display:block;width:100%;border:0;border-radius:20px;font:inherit;font-weight:700;cursor:pointer;
+  padding:20px 16px;min-height:72px;font-size:21px;line-height:1.2;text-align:center;text-decoration:none;
+  transition:transform .12s ease}
+.btn:active{transform:scale(.97)}
+.btn-main{background:var(--accent);color:var(--accent-ink);box-shadow:0 6px 18px rgba(217,98,43,.28)}
+.btn-ghost{background:transparent;color:var(--ink);border:2px solid var(--line);font-size:18px;min-height:60px;padding:14px}
+.btn-small{background:transparent;color:var(--muted);border:0;font-size:16px;min-height:48px;padding:10px;
+  text-decoration:underline;font-weight:500}
+.btn-danger{background:var(--warn);color:#fff}
+.stack>*+*{margin-top:12px}
+/* compte à rebours */
+.timer{text-align:center;margin:14px 0 4px}
+.timer .big{font-size:52px;font-weight:800;letter-spacing:-1px;font-variant-numeric:tabular-nums;line-height:1}
+.timer .sec{font-size:22px;color:var(--muted);font-weight:600}
+.timer .lbl{color:var(--muted);margin-top:4px}
+/* bidon */
+.can-row{display:flex;align-items:center;gap:16px;margin:10px 0}
+.can-box{position:relative;width:120px;height:150px;flex:none}
+.can-box svg{width:100%;height:100%;overflow:visible}
+.count{font-size:20px}
+.count b{font-size:44px;display:block;line-height:1}
+.wave{animation:wave 3.5s linear infinite}
+@keyframes wave{from{transform:translateX(0)}to{transform:translateX(-60px)}}
+.liquid{transition:transform 1.2s cubic-bezier(.3,1.3,.5,1)}
+.drop{position:absolute;left:50%;top:-30px;width:18px;margin-left:-9px;opacity:0;pointer-events:none}
+.drop.fall{animation:fall .9s cubic-bezier(.5,0,.9,.6) forwards}
+@keyframes fall{0%{opacity:1;transform:translateY(0)}85%{opacity:1}100%{opacity:0;transform:translateY(120px)}}
+ul.list{list-style:none}
+ul.list li{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+ul.list li:last-child{border-bottom:0}
+details summary{cursor:pointer;font-weight:600;padding:6px 0;min-height:44px;display:flex;align-items:center}
+.recap dt{color:var(--muted);font-size:15px;margin-top:8px}
+.recap dd{font-size:21px;font-weight:700}
+.ok-badge{display:inline-block;background:var(--soft);color:var(--good);border-radius:999px;padding:6px 14px;font-weight:700}
+.note{background:var(--soft);border-radius:14px;padding:12px 14px;color:var(--ink);font-size:16px;margin:10px 0}
+/* bandeau permanent */
+.fridge{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);
+  padding:12px 16px calc(12px + env(safe-area-inset-bottom));text-align:center;font-size:16px;color:var(--muted);z-index:5}
+.fridge b{color:var(--ink)}
+/* modale */
+.modal{position:fixed;inset:0;background:rgba(10,8,6,.55);display:flex;align-items:flex-end;justify-content:center;z-index:10;padding:16px}
+.modal[hidden]{display:none}
+.modal .card{width:100%;max-width:440px;margin:0;padding:20px}
+.modal p{font-size:19px;margin-bottom:16px}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .drop{display:none}
+}
+</style>
+</head>
+<body>
+<div class="sky" id="sky" aria-hidden="true">
+  <svg viewBox="0 0 400 120" preserveAspectRatio="xMidYMid slice">
+    <g class="stars" fill="#fff">
+      <circle class="star" cx="40" cy="25" r="1.6"/><circle class="star" cx="95" cy="60" r="1.2"/>
+      <circle class="star" cx="150" cy="20" r="1.8"/><circle class="star" cx="210" cy="48" r="1.2"/>
+      <circle class="star" cx="260" cy="18" r="1.5"/><circle class="star" cx="335" cy="70" r="1.3"/>
+      <circle class="star" cx="370" cy="30" r="1.7"/><circle class="star" cx="120" cy="95" r="1.1"/>
+    </g>
+    <circle class="sun" cx="320" cy="46" r="22" fill="#ffd25e"/>
+    <g class="moon"><circle cx="320" cy="44" r="18" fill="#f5f0dc"/><circle cx="330" cy="38" r="16" fill="#1a2046"/></g>
+    <g fill="#fff" opacity=".85">
+      <g class="cloud"><ellipse cx="0" cy="70" rx="34" ry="12"/><ellipse cx="18" cy="62" rx="20" ry="12"/></g>
+      <g class="cloud c2"><ellipse cx="0" cy="40" rx="26" ry="9"/><ellipse cx="12" cy="34" rx="15" ry="9"/></g>
+    </g>
+    <path d="M0 110 Q100 96 200 108 T400 104 V120 H0Z" fill="var(--bg)"/>
+  </svg>
+</div>
+
+<main class="wrap" id="app"></main>
+
+<div class="fridge" id="fridge" hidden>🧊 <b>Bidon au frigo, bien fermé</b></div>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true">
+  <div class="card stack">
+    <p id="modal-text"></p>
+    <button class="btn btn-main" id="modal-ok"></button>
+    <button class="btn btn-ghost" id="modal-cancel">Non, retour</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var KEY = "recueil24h.v1";
+  var DAY = 24 * 3600 * 1000;
+  var FINAL_WINDOW = 30 * 60 * 1000;
+  var LAB_MAPS = "https://www.google.com/maps/search/?api=1&query=" +
+    encodeURIComponent("Cerballiance Europe, 3 rue David, 29200 Brest");
+
+  var storageOk = true;
+
+  function emptyState() { return { start: null, pees: [], done: null, failed: null }; }
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (!raw) return emptyState();
+      var s = JSON.parse(raw);
+      if (!s || typeof s !== "object" || !Array.isArray(s.pees)) return emptyState();
+      return {
+        start: typeof s.start === "number" ? s.start : null,
+        pees: s.pees.filter(function (t) { return typeof t === "number"; }),
+        done: typeof s.done === "number" ? s.done : null,
+        failed: typeof s.failed === "number" ? s.failed : null
+      };
+    } catch (e) { storageOk = false; return emptyState(); }
+  }
+
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); storageOk = true; }
+    catch (e) { storageOk = false; }
+  }
+
+  var state = load();
+  var app = document.getElementById("app");
+
+  /* ---------- formatage (logique pure) ---------- */
+  var DAYS = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
+  function two(n) { return (n < 10 ? "0" : "") + n; }
+  function hourText(t) { var d = new Date(t); return d.getHours() + " h " + two(d.getMinutes()); }
+  function dayHourText(t) { return DAYS[new Date(t).getDay()] + " " + hourText(t); }
+  function plural(n, word) { return n + " " + word + (n > 1 ? "s" : ""); }
+  function endOf() { return state.start + DAY; }
+
+  /* ---------- ciel + thème selon l'heure réelle ---------- */
+  var mqDark = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+  function updateSky() {
+    var h = new Date().getHours();
+    var phase = h >= 21 || h < 6 ? "night" : h < 8 ? "dawn" : h < 19 ? "day" : "dusk";
+    document.getElementById("sky").className = "sky " + phase;
+    var dark = phase === "night" || (mqDark && mqDark.matches);
+    document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", dark ? "#12141c" : "#fff6ec");
+  }
+
+  /* ---------- modale de confirmation ---------- */
+  var modal = document.getElementById("modal");
+  var pending = null;
+  function ask(text, okLabel, danger, onOk) {
+    document.getElementById("modal-text").textContent = text;
+    var ok = document.getElementById("modal-ok");
+    ok.textContent = okLabel;
+    ok.className = "btn " + (danger ? "btn-danger" : "btn-main");
+    pending = onOk;
+    modal.hidden = false;
+  }
+  document.getElementById("modal-ok").addEventListener("click", function () {
+    modal.hidden = true; var f = pending; pending = null; if (f) f();
+  });
+  document.getElementById("modal-cancel").addEventListener("click", function () { modal.hidden = true; pending = null; });
+
+  /* ---------- morceaux d'écran ---------- */
+  function canSvg() {
+    return '<div class="can-box">' +
+      '<svg class="drop" id="drop" viewBox="0 0 20 28"><path d="M10 0C10 0 0 13 0 18a10 10 0 0 0 20 0C20 13 10 0 10 0Z" fill="var(--liquid)"/></svg>' +
+      '<svg viewBox="0 0 120 150" role="img" aria-label="Bidon">' +
+      '<defs><clipPath id="body"><rect x="14" y="32" width="92" height="112" rx="16"/></clipPath></defs>' +
+      '<rect x="42" y="10" width="36" height="24" rx="5" fill="var(--can-line)"/>' +
+      '<rect x="14" y="32" width="92" height="112" rx="16" fill="var(--can)"/>' +
+      '<g clip-path="url(#body)"><g class="liquid" id="liquid">' +
+      '<path class="wave" d="M0 6 Q15 0 30 6 T60 6 T90 6 T120 6 T150 6 T180 6 V200 H0Z" fill="var(--liquid)"/>' +
+      '<rect x="0" y="40" width="200" height="200" fill="var(--liquid-2)" opacity=".35"/></g></g>' +
+      '<rect x="14" y="32" width="92" height="112" rx="16" fill="none" stroke="var(--can-line)" stroke-width="3"/>' +
+      '<path d="M30 52 V120" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".35"/>' +
+      '</svg></div>';
+  }
+
+  function setLevel(n) {
+    var liquid = document.getElementById("liquid");
+    if (!liquid) return;
+    var fill = Math.min(0.12 + n * 0.08, 0.9);
+    if (n === 0) fill = 0.02;
+    var y = 144 - fill * 112;
+    liquid.setAttribute("transform", "translate(0 " + y.toFixed(1) + ")");
+  }
+
+  function dropAnim() {
+    var d = document.getElementById("drop");
+    if (!d) return;
+    d.classList.remove("fall"); void d.getBoundingClientRect(); d.classList.add("fall");
+  }
+
+  function peeList() {
+    if (!state.pees.length) return '<p class="muted">Aucun pipi pour l\'instant.</p>';
+    var items = state.pees.map(function (t, i) {
+      return "<li><span>Pipi n° " + (i + 1) + "</span><b>" + hourText(t) + "</b></li>";
+    }).reverse().join("");
+    return '<ul class="list">' + items + "</ul>";
+  }
+
+  function stepsHtml() {
+    return '<ol class="steps">' +
+      "<li><b>Dimanche 7 h</b> : pipi dans les toilettes, on ne garde rien. C'est le départ du chrono.</li>" +
+      "<li><b>Pendant 24 h</b> : chaque pipi dans un pot, puis versé dans le bidon. Aucun pipi dans les toilettes, même la nuit.</li>" +
+      "<li><b>Entre deux pipis</b> : bidon fermé, au frigo.</li>" +
+      "<li><b>Lundi 7 h</b> : dernier pipi, dans le bidon (on le garde).</li>" +
+      "<li><b>Lundi matin</b> : apporter le bidon au labo.</li></ol>" +
+      '<div class="rule">Si un pipi part dans les toilettes par erreur, il faut tout recommencer un autre jour.</div>';
+  }
+
+  function labHtml() {
+    return '<div class="card"><h2 style="margin-top:0">Le labo</h2>' +
+      "<p><b>Cerballiance, site Europe</b><br>3 rue David, 29200 Brest</p>" +
+      "<p>Ouvert dès <b>7 h 30</b></p>" +
+      '<a class="btn btn-ghost" style="margin-top:12px" href="' + LAB_MAPS + '" target="_blank" rel="noopener">📍 Ouvrir dans Maps</a></div>';
+  }
+
+  function storageWarning() {
+    return storageOk ? "" :
+      '<div class="note">⚠️ Ce téléphone ne garde pas les données de cette page (navigation privée ?). Gardez la page ouverte, ou ouvrez le lien dans un onglet normal.</div>';
+  }
+
+  function resetLink(label) {
+    return '<button class="btn btn-small" data-act="reset">' + (label || "Réinitialiser") + "</button>";
+  }
+
+  /* ---------- écrans ---------- */
+  function screenWelcome() {
+    return "<h1>Recueil de pipi sur 24 h</h1>" +
+      '<p class="muted">Du dimanche matin au lundi matin. Cette page vous guide pas à pas.</p>' +
+      storageWarning() +
+      '<div class="card">' + stepsHtml() + "</div>" +
+      '<button class="btn btn-main" data-act="start">Départ : premier pipi fait aux toilettes</button>' +
+      '<p class="muted" style="text-align:center;margin-top:10px;font-size:15px">Appuyez juste après ce premier pipi. Le chrono démarre à cette heure-là.</p>';
+  }
+
+  function timerHtml() {
+    return '<div class="timer"><div><span class="big" id="t-big"></span> <span class="sec" id="t-sec"></span></div>' +
+      '<div class="lbl">avant la fin · fin prévue <b>' + dayHourText(endOf()) + "</b></div></div>";
+  }
+
+  function canRow() {
+    return '<div class="can-row">' + canSvg() +
+      '<div class="count"><b id="count">' + state.pees.length + "</b>" +
+      (state.pees.length > 1 ? "pipis" : "pipi") + " dans le bidon</div></div>";
+  }
+
+  function screenRunning() {
+    return storageWarning() + timerHtml() + canRow() +
+      '<button class="btn btn-main" data-act="pee">💧 Pipi versé dans le bidon</button>' +
+      '<div class="card"><h2 style="margin-top:0">Les pipis</h2>' + peeList() +
+      (state.pees.length ? '<button class="btn btn-small" data-act="undo">Annuler le dernier (appui par erreur)</button>' : "") +
+      "</div>" +
+      '<div class="card"><details><summary>Rappel du déroulé</summary>' + stepsHtml() + "</details></div>" +
+      '<button class="btn btn-ghost" data-act="fail">Un pipi est parti aux toilettes</button>' +
+      '<div style="text-align:center">' + resetLink() + "</div>";
+  }
+
+  function screenFinal() {
+    var lastInWindow = state.pees.some(function (t) { return t >= endOf() - FINAL_WINDOW; });
+    var over = Date.now() >= endOf();
+    var head = '<h1>Dernier pipi → dans le bidon</h1>' +
+      '<p>C\'est presque fini. Ce dernier pipi, <b>on le garde</b> : il va dans le bidon.</p>' +
+      (over ? '<p class="muted">L\'heure de fin est passée : faites ce dernier pipi dès que possible.</p>' : "");
+    var peeBtn = '<button class="btn ' + (lastInWindow ? "btn-ghost" : "btn-main") + '" data-act="pee">💧 Pipi versé dans le bidon</button>';
+    var doneBtn = '<button class="btn ' + (lastInWindow ? "btn-main" : "btn-ghost") + '" data-act="finish">✅ Terminé</button>';
+    return storageWarning() + head + (over ? "" : timerHtml()) + canRow() +
+      '<div class="stack">' + (lastInWindow ? doneBtn + peeBtn : peeBtn + doneBtn) + "</div>" +
+      '<div class="card"><h2 style="margin-top:0">Les pipis</h2>' + peeList() + "</div>" +
+      '<button class="btn btn-ghost" data-act="fail">Un pipi est parti aux toilettes</button>' +
+      '<div style="text-align:center">' + resetLink() + "</div>";
+  }
+
+  function screenDone() {
+    return "<h1>Bravo, c'est terminé 🎉</h1>" +
+      "<h2>Apporter le bidon au labo</h2>" +
+      "<p>Bidon bien fermé. Gardez-le au frais jusqu'au départ.</p>" + labHtml() +
+      '<div class="card"><h2 style="margin-top:0">À montrer au labo</h2><dl class="recap">' +
+      "<dt>Départ</dt><dd>" + dayHourText(state.start) + "</dd>" +
+      "<dt>Fin</dt><dd>" + dayHourText(state.done) + "</dd>" +
+      "<dt>Nombre de pipis dans le bidon</dt><dd>" + state.pees.length + "</dd>" +
+      "</dl></div>" +
+      '<div style="text-align:center">' + resetLink() + "</div>";
+  }
+
+  function screenFailed() {
+    return "<h1>Il faudra recommencer un autre jour</h1>" +
+      "<p>Ce n'est pas grave, ça arrive. Le recueil n'est plus valable : un pipi manque dans le bidon.</p>" +
+      "<p>Vous pouvez vider le bidon. Un autre jour, on reprend tout depuis le début.</p>" +
+      '<div class="stack" style="margin-top:18px"><button class="btn btn-main" data-act="reset">Recommencer à zéro</button></div>';
+  }
+
+  /* ---------- rendu ---------- */
+  var current = "";
+  function screenName() {
+    if (!state.start) return "welcome";
+    if (state.failed) return "failed";
+    if (state.done) return "done";
+    return endOf() - Date.now() > FINAL_WINDOW ? "running" : "final";
+  }
+
+  function render() {
+    var name = screenName();
+    current = name;
+    var html = name === "welcome" ? screenWelcome() : name === "failed" ? screenFailed() :
+      name === "done" ? screenDone() : name === "running" ? screenRunning() : screenFinal();
+    app.innerHTML = html;
+    document.getElementById("fridge").hidden = name !== "running" && name !== "final" && name !== "done";
+    setLevel(state.pees.length);
+    tick();
+  }
+
+  function tick() {
+    updateSky();
+    if (!state.start || state.done || state.failed) return;
+    if (screenName() !== current) { render(); return; }
+    var big = document.getElementById("t-big");
+    if (!big) return;
+    var left = Math.max(0, endOf() - Date.now());
+    var s = Math.floor(left / 1000);
+    big.textContent = Math.floor(s / 3600) + " h " + two(Math.floor(s / 60) % 60);
+    document.getElementById("t-sec").textContent = two(s % 60) + " s";
+  }
+
+  /* ---------- actions ---------- */
+  var actions = {
+    start: function () { state = emptyState(); state.start = Date.now(); save(); render(); window.scrollTo(0, 0); },
+    pee: function () {
+      state.pees.push(Date.now()); save(); render(); dropAnim();
+      if (navigator.vibrate) { try { navigator.vibrate(30); } catch (e) {} }
+    },
+    undo: function () {
+      var last = state.pees[state.pees.length - 1];
+      ask("Annuler le pipi de " + hourText(last) + " ? (seulement si vous avez appuyé par erreur)", "Oui, annuler ce pipi", false,
+        function () { state.pees.pop(); save(); render(); });
+    },
+    fail: function () {
+      ask("Un pipi est vraiment parti dans les toilettes ?", "Oui, il est parti aux toilettes", true,
+        function () { state.failed = Date.now(); save(); render(); window.scrollTo(0, 0); });
+    },
+    finish: function () {
+      ask("Le dernier pipi est bien dans le bidon ?", "Oui, c'est terminé", false,
+        function () { state.done = Date.now(); save(); render(); window.scrollTo(0, 0); });
+    },
+    reset: function () {
+      ask("Tout effacer et revenir au début ?", "Oui, tout effacer", true,
+        function () { state = emptyState(); try { localStorage.removeItem(KEY); } catch (e) {} render(); window.scrollTo(0, 0); });
+    }
+  };
+
+  app.addEventListener("click", function (e) {
+    var el = e.target.closest ? e.target.closest("[data-act]") : null;
+    if (!el) return;
+    var f = actions[el.getAttribute("data-act")];
+    if (f) f();
+  });
+
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) { state = load(); render(); } });
+  if (mqDark && mqDark.addEventListener) mqDark.addEventListener("change", updateSky);
+  setInterval(tick, 1000);
+  render();
+})();
+</script>
+</body>
+</html>
