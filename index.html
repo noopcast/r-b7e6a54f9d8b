@@ -65,6 +65,9 @@ ol.steps li::before{content:counter(s);position:absolute;left:0;top:9px;width:32
 .btn-ghost{background:transparent;color:var(--ink);border:2px solid var(--line);font-size:18px;min-height:60px;padding:14px}
 .btn-small{background:transparent;color:var(--muted);border:0;font-size:16px;min-height:48px;padding:10px;
   text-decoration:underline;font-weight:500}
+.btn-listen{display:inline-flex;align-items:center;gap:8px;background:var(--soft);color:var(--accent);border:0;border-radius:999px;
+  font:inherit;font-weight:700;font-size:17px;min-height:48px;padding:10px 18px;cursor:pointer;margin-bottom:8px}
+.btn-listen[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
 .btn-danger{background:var(--warn);color:#fff}
 .stack>*+*{margin-top:12px}
 /* compte à rebours */
@@ -250,8 +253,56 @@ details summary{cursor:pointer;font-weight:600;padding:6px 0;min-height:44px;dis
     return '<ul class="list">' + items + "</ul>";
   }
 
+  /* ---------- lecture vocale ---------- */
+  var SPEECH = {
+    steps: "Voici les étapes. Un : dimanche à 7 heures, pipi dans les toilettes, on ne garde rien. C'est le départ du chrono. " +
+      "Deux : pendant 24 heures, chaque pipi dans un pot, puis versé dans le bidon. Aucun pipi dans les toilettes, même la nuit. " +
+      "Trois : entre deux pipis, bidon fermé, au frigo. " +
+      "Quatre : lundi à 7 heures, dernier pipi, dans le bidon. On le garde. " +
+      "Cinq : lundi matin, apporter le bidon au labo. " +
+      "Attention : si un pipi part dans les toilettes par erreur, il faut tout recommencer un autre jour.",
+    lab: "Apporter le bidon au labo. Cerballiance, site Europe, 3 rue David, à Brest. Ouvert dès 7 heures 30."
+  };
+  var canSpeak = "speechSynthesis" in window && typeof SpeechSynthesisUtterance === "function";
+  var speakingKey = null;
+
+  function listenBtn(key) {
+    if (!canSpeak) return "";
+    var on = speakingKey === key;
+    return '<button class="btn-listen" data-act="speak" data-key="' + key + '" aria-pressed="' + on + '">' +
+      (on ? "⏹ Arrêter" : "▶️ Écouter") + "</button>";
+  }
+
+  function refreshListenBtns() {
+    var btns = document.querySelectorAll(".btn-listen");
+    for (var i = 0; i < btns.length; i++) {
+      var on = btns[i].getAttribute("data-key") === speakingKey;
+      btns[i].setAttribute("aria-pressed", String(on));
+      btns[i].textContent = on ? "⏹ Arrêter" : "▶️ Écouter";
+    }
+  }
+
+  function toggleSpeech(key) {
+    try {
+      var wasMine = speakingKey === key;
+      window.speechSynthesis.cancel();
+      speakingKey = null;
+      if (!wasMine) {
+        var u = new SpeechSynthesisUtterance(SPEECH[key]);
+        u.lang = "fr-FR";
+        u.rate = 0.92;
+        var voices = window.speechSynthesis.getVoices();
+        for (var i = 0; i < voices.length; i++) { if (/^fr/i.test(voices[i].lang)) { u.voice = voices[i]; break; } }
+        u.onend = u.onerror = function () { if (speakingKey === key) { speakingKey = null; refreshListenBtns(); } };
+        speakingKey = key;
+        window.speechSynthesis.speak(u);
+      }
+    } catch (e) { speakingKey = null; }
+    refreshListenBtns();
+  }
+
   function stepsHtml() {
-    return '<ol class="steps">' +
+    return listenBtn("steps") + '<ol class="steps">' +
       "<li><b>Dimanche 7 h</b> : pipi dans les toilettes, on ne garde rien. C'est le départ du chrono.</li>" +
       "<li><b>Pendant 24 h</b> : chaque pipi dans un pot, puis versé dans le bidon. Aucun pipi dans les toilettes, même la nuit.</li>" +
       "<li><b>Entre deux pipis</b> : bidon fermé, au frigo.</li>" +
@@ -261,7 +312,7 @@ details summary{cursor:pointer;font-weight:600;padding:6px 0;min-height:44px;dis
   }
 
   function labHtml() {
-    return '<div class="card"><h2 style="margin-top:0">Le labo</h2>' +
+    return '<div class="card"><h2 style="margin-top:0">Le labo</h2>' + listenBtn("lab") +
       "<p><b>Cerballiance, site Europe</b><br>3 rue David, 29200 Brest</p>" +
       "<p>Ouvert dès <b>7 h 30</b></p>" +
       '<a class="btn btn-ghost" style="margin-top:12px" href="' + LAB_MAPS + '" target="_blank" rel="noopener">📍 Ouvrir dans Maps</a></div>';
@@ -376,6 +427,7 @@ details summary{cursor:pointer;font-weight:600;padding:6px 0;min-height:44px;dis
 
   /* ---------- actions ---------- */
   var actions = {
+    speak: function (el) { toggleSpeech(el.getAttribute("data-key")); },
     start: function () { state = emptyState(); state.start = Date.now(); save(); render(); window.scrollTo(0, 0); },
     pee: function () {
       state.pees.push(Date.now()); save(); render(); dropAnim();
@@ -404,7 +456,7 @@ details summary{cursor:pointer;font-weight:600;padding:6px 0;min-height:44px;dis
     var el = e.target.closest ? e.target.closest("[data-act]") : null;
     if (!el) return;
     var f = actions[el.getAttribute("data-act")];
-    if (f) f();
+    if (f) f(el);
   });
 
   document.addEventListener("visibilitychange", function () { if (!document.hidden) { state = load(); render(); } });
